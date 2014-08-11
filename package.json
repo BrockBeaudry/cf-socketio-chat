@@ -1,0 +1,24 @@
+{
+  "name": "cf-socketio-chat",
+  "version": "0.0.0",
+  "description": "A super-simple (more like SUPER-AWESOME chatroom in Socket.IO",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BrockBeaudry/cf-socketio-chat"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BrockBeaudry/cf-socketio-chat/issues"
+  },
+  "homepage": "https://github.com/BrockBeaudry/cf-socketio-chat",
+  "dependencies": {
+    "express": "^4.8.3",
+    "socket.io": "^1.0.6"
+  }
+}
