@@ -22,7 +22,9 @@ app.get('/', function(req, res) {
 var usernames = {};
 var numUsers = 0;
 io.on('connection', function(socket) {
-	var addedUser = false; // <= What is this for?
+
+	var addedUser = false;
+
 	// New messages
 	socket.on('new message', function(data) {
 		socket.broadcast.emit('new message', {
@@ -30,6 +32,7 @@ io.on('connection', function(socket) {
 			message: data
 		});
 	});
+	
 	// Adding users
 	socket.on('add user', function(username) {
 		socket.username = username;
@@ -73,28 +76,3 @@ io.on('connection', function(socket) {
 		}
 	});
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// "Hello World" demo
-// io.on('connection', function(socket) {
-//     console.log('Connected!');
-//     socket.emit('news', {hello: 'world'});
-//     socket.on('event 2', function(data) {
-//     	console.log('Is this right? ' + data);
-//     });
-// });
