@@ -5,6 +5,7 @@ var express = require('express');
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var generateName = require('sillyname');
 
 app.set('port', process.env.PORT || 3000);
 server.listen(app.get('port'), function() {
@@ -25,6 +26,8 @@ io.on('connection', function(socket) {
 
 	var addedUser = false;
 
+	socket.emit('assign username', { username: generateName() });
+
 	// New messages
 	socket.on('new message', function(data) {
 		socket.broadcast.emit('new message', {
@@ -32,7 +35,7 @@ io.on('connection', function(socket) {
 			message: data
 		});
 	});
-	
+
 	// Adding users
 	socket.on('add user', function(username) {
 		socket.username = username;

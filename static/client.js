@@ -1,4 +1,6 @@
 $(function() {
+  'use strict';
+
   var FADE_TIME = 150; // ms
   var TYPING_TIMER_LENGTH = 400; // ms
   var COLORS = [
@@ -36,8 +38,8 @@ $(function() {
   }
 
   // Sets the client's username
-  function setUsername () {
-    username = cleanInput($usernameInput.val().trim());
+  function setUsername (name) {
+    username = cleanInput(name);
 
     // If the username is valid
     if (username) {
@@ -201,8 +203,6 @@ $(function() {
         sendMessage();
         socket.emit('stop typing');
         typing = false;
-      } else {
-        setUsername();
       }
     }
   });
@@ -225,11 +225,15 @@ $(function() {
 
   // Socket events
 
+  socket.on('assign username', function(data) {
+    setUsername(data.username);
+  });
+
   // Whenever the server emits 'login', log the login message
   socket.on('login', function (data) {
     connected = true;
     // Display the welcome message
-    var message = "Welcome to Socket.IO Chat &mdash; ";
+    var message = "Welcome to Socket.IO Chat. Your username is " + username + '!';
     log(message, {
       prepend: true
     });
