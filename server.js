@@ -23,17 +23,31 @@ app.get('/', function(req, res) {
 var usernames = {};
 var numUsers = 0;
 io.on('connection', function(socket) {
+	var username = generateName().replace(/\s/g, '_');
+	var userHash = {};
 
 	var addedUser = false;
 
-	socket.emit('assign username', { username: generateName() });
+	socket.emit('assign username', { username: username });
+	userHash[username] = socket;
 
 	// New messages
 	socket.on('new message', function(data) {
-		socket.broadcast.emit('new message', {
-			username: socket.username,
-			message: data
-		});
+		// Separate private messages
+		if (data.charAt(0) == '@') {
+			console.log('Private message: ' + data.slice(1, data.length));
+			var privateUser = data.match(/\S*/)[0].replace(/^@/, '');
+			var privateMessage = data.match(/\s.*/)[0].replace(/^\s/, '');
+			console.log('Private user: ' + privateUser);
+			console.log('Private message: ' + privateMessage);
+
+		} else {
+			// Public messages 
+			socket.broadcast.emit('new message', {
+				username: socket.username,
+				message: data
+			});
+		}
 	});
 
 	// Adding users
