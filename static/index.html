@@ -5,6 +5,15 @@
         <title>SocketIO Chatroom</title>
     </head>
     <body>
-        <p>Hello, world!</p>
+        <!-- <p>Hello, world!</p> -->
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+	        var socket = io.connect('http://localhost');
+	        socket.on('news', function(data) {
+	        	console.log(data);
+	        	socket.emit('event 2', {hello: 'again'});
+	        });
+        </script>
     </body>
 </html>

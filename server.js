@@ -19,6 +19,10 @@ app.get('/', function(req, res) {
 });
 
 // Event handlers
-io.on('connection', function() {
-    console.log('on connection');
+io.on('connection', function(socket) {
+    console.log('Connected!');
+    socket.emit('news', {hello: 'world'});
+    socket.on('event 2', function(data) {
+    	console.log('Is this right? ' + data);
+    });
 });
