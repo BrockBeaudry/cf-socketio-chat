@@ -50,6 +50,7 @@ io.on('connection', function(socket) {
 					message: 'You didn\'t type anything!',
 					type: 'privateMessage'
 				});
+				return;
 			}
 			console.log('Their name: ' + privateUser);
 			// TO DO: add *better* error handling: what if there's no msg?
