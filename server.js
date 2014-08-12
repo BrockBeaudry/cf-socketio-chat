@@ -61,6 +61,10 @@ io.on('connection', function(socket) {
 			// Join the new room, and put the target user in there too
 			socket.join(roomName);
 			var theirSocket = userHash[privateUser];
+			// Do they even exist?
+			if (!theirSocket) {
+				return 'Other user doesn\'t exist'
+			}
 			theirSocket.join(roomName);
 
 			// Connect!
