@@ -74,8 +74,8 @@ io.on('connection', function(socket) {
 			});
 
 			// End the connection right away
-			socket.leave(roomName);
-			theirSocket.leave(roomName);
+			// socket.leave(roomName);
+			// theirSocket.leave(roomName);
 		} else {
 			// Public messages 
 			socket.broadcast.emit('new message', {
