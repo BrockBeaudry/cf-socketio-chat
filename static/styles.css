@@ -127,6 +127,11 @@ ul {
   color: gray;
 }
 
+/* Identifies private messages */
+.red {
+  color: red;
+}
+
 .username {
   float: left;
   font-weight: 700;
@@ -147,9 +152,4 @@ ul {
   position: absolute;
   right: 0;
   width: 100%;
-}
-
-/* Move this */
-.red {
-  color: red;
 }

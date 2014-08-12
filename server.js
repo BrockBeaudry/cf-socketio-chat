@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 
 // Server config
 var express = require('express');
@@ -54,28 +54,19 @@ io.on('connection', function(socket) {
 				return;
 			}
 			
-			// Set the room name
-			// var roomName = Math.floor((Math.random() * 10000) + 1);
-			
-			// Join the new room, and put the target user in there too
-			// socket.join(roomName);
-			var theirSocket = userHash[privateUser];
+			// Get PM recipient's socket
+			var targetSocket = userHash[privateUser];
 			// Do they even exist?
-			if (!theirSocket) {
-				return 'Other user doesn\'t exist'
+			if (!targetSocket) {
+				return 'Other user doesn\'t exist';
 			}
-			// theirSocket.join(roomName);
 
 			// Connect!
-			socket.broadcast.to(theirSocket.id).emit('new message', {
+			socket.broadcast.to(targetSocket.id).emit('new message', {
 				username: socket.username,
 				message: privateMessage,
 				type: 'privateMessage'
 			});
-
-			// End the connection right away
-			// socket.leave(roomName);
-			// theirSocket.leave(roomName);
 		} else {
 			// Public messages 
 			socket.broadcast.emit('new message', {
