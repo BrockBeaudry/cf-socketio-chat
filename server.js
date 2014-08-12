@@ -71,7 +71,8 @@ io.on('connection', function(socket) {
 			//io.broadcast.to(roomName).emit
 			socket.broadcast.to(theirSocket.id).emit('new message', {
 				username: socket.username,
-				message: privateMessage
+				message: privateMessage,
+				type: private
 			});
 
 			// End the connection right away
@@ -81,7 +82,8 @@ io.on('connection', function(socket) {
 			// Public messages 
 			socket.broadcast.emit('new message', {
 				username: socket.username,
-				message: data
+				message: data,
+				type: public
 			});
 		}
 	});
