@@ -72,7 +72,7 @@ io.on('connection', function(socket) {
 			socket.broadcast.to(theirSocket.id).emit('new message', {
 				username: socket.username,
 				message: privateMessage,
-				type: private
+				type: privateMessage
 			});
 
 			// End the connection right away
@@ -83,7 +83,7 @@ io.on('connection', function(socket) {
 			socket.broadcast.emit('new message', {
 				username: socket.username,
 				message: data,
-				type: public
+				type: publicMessage
 			});
 		}
 	});

@@ -90,7 +90,7 @@ $(function() {
       .text(data.username)
       .css('color', getUsernameColor(data.username));
     
-    if (options.type === 'private') {
+    if (options.type === 'privateMessage') {
       var $messageBodyDiv = $('<span class="messageBody red">')
       .text(data.message);
     } else {
