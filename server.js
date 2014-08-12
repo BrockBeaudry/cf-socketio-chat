@@ -4,7 +4,8 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var socketio = require('socket.io');
+var io = socketio(server); // Note that we've split this in two to allow for new calls to socketio()
 var generateName = require('sillyname');
 
 app.set('port', process.env.PORT || 3000);
@@ -22,6 +23,10 @@ app.get('/', function(req, res) {
 // Socket functionality
 var usernames = {};
 var numUsers = 0;
+
+// Add dummy data
+var newSocket = socketio()
+
 io.on('connection', function(socket) {
 	var username = generateName().replace(/\s/g, '_');
 	var userHash = {};
@@ -31,6 +36,7 @@ io.on('connection', function(socket) {
 
 	socket.emit('assign username', { username: username });
 	userHash[username] = socket;
+	userHash['test'] = newSocket;
 
 	// New messages
 	socket.on('new message', function(data) {
@@ -45,13 +51,14 @@ io.on('connection', function(socket) {
 				console.log('NICE TRY not an array');
 			}
 			// Add *better* error handling: what if there's no msg?
-			// console.log('Private user: ' + privateUser);
-			// console.log('Private message: ' + privateMessage);
+			
 			var roomName = Math.floor((Math.random() * 100) + 1);
-			// Check again rooms[] to make sure we're not already using it
+			// Check against rooms[] to make sure we're not already using it
+			
 			socket.join(roomName); // Corresponds to user who's sending the msg
 			var theirSocket = userHash[privateUser];
-			console.log('Their socket' + theirSocket);
+			// console.log('Their socket' + theirSocket);
+			theirSocket.join(roomName);
 		} else {
 			// Public messages 
 			socket.broadcast.emit('new message', {
