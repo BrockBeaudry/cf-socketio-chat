@@ -68,7 +68,7 @@ io.on('connection', function(socket) {
 			theirSocket.join(roomName);
 
 			// Connect!
-			io.to(roomName).broadcast.emit('new message', {
+			io.broadcast.to(roomName).emit('new message', {
 				username: socket.username,
 				message: privateMessage
 			});
