@@ -65,7 +65,7 @@ io.on('connection', function(socket) {
 
 
 
-			// theirSocket.join(roomName); // <= the problem
+			theirSocket.join(roomName); // <= the problem
 		} else {
 			// Public messages 
 			socket.broadcast.emit('new message', {
