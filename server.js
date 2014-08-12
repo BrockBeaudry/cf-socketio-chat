@@ -54,18 +54,20 @@ io.on('connection', function(socket) {
 			// Add *better* error handling: what if there's no msg?
 			
 			var roomName = Math.floor((Math.random() * 100) + 1);
-			// Check against rooms[] to make sure we're not already using it
+			// TO DO Check against rooms[] to make sure we're not already using it
 			
 			socket.join(roomName); // Corresponds to user who's sending the msg
-			var theirSocket = userHash[privateUser];
-			
-			// Temp checking for type
-			console.log('Me:\n' + userHash[username]);
-			console.log('Them:\n' + theirSocket);			
-
+			// var theirSocket = userHash[privateUser];
 
 
 			theirSocket.join(roomName); // <= the problem
+
+			// Here we go!
+			io.to(roomName).emit('new message', {
+				username: socket.username,
+				message: 'This msg is private'
+			});
+
 		} else {
 			// Public messages 
 			socket.broadcast.emit('new message', {
