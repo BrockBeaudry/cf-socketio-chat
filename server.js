@@ -40,14 +40,13 @@ io.on('connection', function(socket) {
 			var privateUser = data.match(/\S*/)[0].replace(/^@/, '');
 			var privateMessage = data.match(/\s.*/)[0].replace(/^\s/, '');
 			// Add error handling: what if there's no msg?
-			console.log('Private user: ' + privateUser);
-			console.log('Private message: ' + privateMessage);
+			// console.log('Private user: ' + privateUser);
+			// console.log('Private message: ' + privateMessage);
 			var roomName = Math.floor((Math.random() * 100) + 1);
 			// Check again rooms[] to make sure we're not already using it
 			socket.join(roomName); // Corresponds to user who's sending the msg
 			var theirSocket = userHash[privateUser];
-			console.log(theirSocket);
-
+			console.log('Their socket' + theirSocket);
 		} else {
 			// Public messages 
 			socket.broadcast.emit('new message', {
