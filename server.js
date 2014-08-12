@@ -65,7 +65,7 @@ io.on('connection', function(socket) {
 			// Here we go!
 			io.to(roomName).emit('new message', {
 				username: socket.username,
-				message: 'This msg is private'
+				message: privateMessage
 			});
 
 		} else {
