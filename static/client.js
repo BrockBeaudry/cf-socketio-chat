@@ -89,8 +89,15 @@ $(function() {
     var $usernameDiv = $('<span class="username"/>')
       .text(data.username)
       .css('color', getUsernameColor(data.username));
-    var $messageBodyDiv = $('<span class="messageBody">')
+    
+    var $messageBodyDiv;
+    if (options.type === 'privateMessage') {
+      $messageBodyDiv = $('<span class="messageBody red">')
       .text(data.message);
+    } else {
+      $messageBodyDiv = $('<span class="messageBody">')
+      .text(data.message);
+    }
 
     var typingClass = data.typing ? 'typing' : '';
     var $messageDiv = $('<li class="message"/>')
@@ -242,7 +249,8 @@ $(function() {
 
   // Whenever the server emits 'new message', update the chat body
   socket.on('new message', function (data) {
-    addChatMessage(data);
+    addChatMessage(data, {type: data.type});
+    // We add message here!
   });
 
   // Whenever the server emits 'user joined', log it in the chat body

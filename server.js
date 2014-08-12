@@ -1,4 +1,4 @@
-'use strict';
+// 'use strict';
 
 // Server config
 var express = require('express');
@@ -12,40 +12,67 @@ server.listen(app.get('port'), function() {
     console.log('Listening on: ' + app.get('port'));
 });
 
+// Routing
 app.use(express.static(__dirname + '/static'));
 
-// Routers
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-// Socket functionality
+// Chatroom stats
 var usernames = {};
 var numUsers = 0;
+
+// Storage structure for rooms (including private chat)
+var userHash = {};
+
 io.on('connection', function(socket) {
-	var username = generateName().replace(/\s/g, '_');
-	var userHash = {};
-
 	var addedUser = false;
-
-	socket.emit('assign username', { username: username });
+	var username = generateName().replace(/\s/g, '_');
 	userHash[username] = socket;
+	
+	socket.emit('assign username', {
+		username: username
+	});
 
 	// New messages
 	socket.on('new message', function(data) {
 		// Separate private messages
 		if (data.charAt(0) == '@') {
-			console.log('Private message: ' + data.slice(1, data.length));
+			// Parse out username and message
 			var privateUser = data.match(/\S*/)[0].replace(/^@/, '');
-			var privateMessage = data.match(/\s.*/)[0].replace(/^\s/, '');
-			console.log('Private user: ' + privateUser);
-			console.log('Private message: ' + privateMessage);
+			var privateMessage = data.match(/\s.*/);
+			// Handle empty messages
+			if (privateMessage) {
+				privateMessage = privateMessage[0].replace(/^\s/, '');
+			} else {
+				socket.emit('new message', {
+					username: socket.username,
+					message: 'You didn\'t type anything!',
+					type: 'privateMessage'
+				});
+				return;
+			}
+			
+			// Get PM recipient's socket
+			var targetSocket = userHash[privateUser];
+			// Do they even exist?
+			if (!targetSocket) {
+				return 'Other user doesn\'t exist';
+			}
 
+			// Connect!
+			socket.broadcast.to(targetSocket.id).emit('new message', {
+				username: socket.username,
+				message: privateMessage,
+				type: 'privateMessage'
+			});
 		} else {
 			// Public messages 
 			socket.broadcast.emit('new message', {
 				username: socket.username,
-				message: data
+				message: data,
+				type: 'publicMessage'
 			});
 		}
 	});

@@ -127,6 +127,11 @@ ul {
   color: gray;
 }
 
+/* Identifies private messages */
+.red {
+  color: red;
+}
+
 .username {
   float: left;
   font-weight: 700;
