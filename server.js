@@ -25,6 +25,7 @@ var numUsers = 0;
 io.on('connection', function(socket) {
 	var username = generateName().replace(/\s/g, '_');
 	var userHash = {};
+	var rooms = [];
 
 	var addedUser = false;
 
@@ -38,8 +39,14 @@ io.on('connection', function(socket) {
 			console.log('Private message: ' + data.slice(1, data.length));
 			var privateUser = data.match(/\S*/)[0].replace(/^@/, '');
 			var privateMessage = data.match(/\s.*/)[0].replace(/^\s/, '');
+			// Add error handling: what if there's no msg?
 			console.log('Private user: ' + privateUser);
 			console.log('Private message: ' + privateMessage);
+			var roomName = Math.floor((Math.random() * 100) + 1);
+			// Check again rooms[] to make sure we're not already using it
+			socket.join(roomName); // Corresponds to user who's sending the msg
+			var theirSocket = userHash[privateUser];
+			console.log(theirSocket);
 
 		} else {
 			// Public messages 
