@@ -27,11 +27,12 @@ var numUsers = 0;
 // Add dummy data
 var newSocket = socketio()
 
+// Build out storage structures (once!)
+var userHash = {};
+var rooms = []; // Not necessary yet
+
 io.on('connection', function(socket) {
 	var username = generateName().replace(/\s/g, '_');
-	var userHash = {};
-	var rooms = [];
-
 	var addedUser = false;
 
 	socket.emit('assign username', { username: username });
@@ -42,7 +43,6 @@ io.on('connection', function(socket) {
 	socket.on('new message', function(data) {
 		// Separate private messages
 		if (data.charAt(0) == '@') {
-			console.log('Private message: ' + data.slice(1, data.length));
 			var privateUser = data.match(/\S*/)[0].replace(/^@/, '');
 			var privateMessage = data.match(/\s.*/);
 			if (typeof privateMessage == 'array') {
@@ -50,6 +50,7 @@ io.on('connection', function(socket) {
 			} else {
 				console.log('NICE TRY not an array');
 			}
+			console.log('Their name: ' + privateUser);
 			// Add *better* error handling: what if there's no msg?
 			
 			var roomName = Math.floor((Math.random() * 100) + 1);
@@ -57,8 +58,14 @@ io.on('connection', function(socket) {
 			
 			socket.join(roomName); // Corresponds to user who's sending the msg
 			var theirSocket = userHash[privateUser];
-			// console.log('Their socket' + theirSocket);
-			theirSocket.join(roomName);
+			
+			// Temp checking for type
+			console.log('Me:\n' + userHash[username]);
+			console.log('Them:\n' + theirSocket);			
+
+
+
+			// theirSocket.join(roomName); // <= the problem
 		} else {
 			// Public messages 
 			socket.broadcast.emit('new message', {
