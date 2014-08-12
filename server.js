@@ -57,7 +57,7 @@ io.on('connection', function(socket) {
 			// TO DO Check against rooms[] to make sure we're not already using it
 			
 			socket.join(roomName); // Corresponds to user who's sending the msg
-			// var theirSocket = userHash[privateUser];
+			var theirSocket = userHash[privateUser];
 
 
 			theirSocket.join(roomName); // <= the problem
