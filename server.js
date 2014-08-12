@@ -42,6 +42,7 @@ io.on('connection', function(socket) {
 			// Parse out username and message
 			var privateUser = data.match(/\S*/)[0].replace(/^@/, '');
 			var privateMessage = data.match(/\s.*/);
+			// Handle empty messages
 			if (privateMessage) {
 				privateMessage = privateMessage[0].replace(/^\s/, '');
 			} else {
@@ -52,20 +53,18 @@ io.on('connection', function(socket) {
 				});
 				return;
 			}
-			console.log('Their name: ' + privateUser);
-			// TO DO: add *better* error handling: what if there's no msg?
 			
 			// Set the room name
-			var roomName = Math.floor((Math.random() * 10000) + 1);
+			// var roomName = Math.floor((Math.random() * 10000) + 1);
 			
 			// Join the new room, and put the target user in there too
-			socket.join(roomName);
+			// socket.join(roomName);
 			var theirSocket = userHash[privateUser];
 			// Do they even exist?
 			if (!theirSocket) {
 				return 'Other user doesn\'t exist'
 			}
-			theirSocket.join(roomName);
+			// theirSocket.join(roomName);
 
 			// Connect!
 			socket.broadcast.to(theirSocket.id).emit('new message', {
