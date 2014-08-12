@@ -4,8 +4,7 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-var socketio = require('socket.io');
-var io = socketio(server); // Note that we've split this in two to allow for new calls to socketio()
+var io = require('socket.io')(server);
 var generateName = require('sillyname');
 
 app.set('port', process.env.PORT || 3000);
@@ -13,50 +12,50 @@ server.listen(app.get('port'), function() {
     console.log('Listening on: ' + app.get('port'));
 });
 
+// Routing
 app.use(express.static(__dirname + '/static'));
 
-// Routers
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-// Socket functionality
+// Chatroom stats
 var usernames = {};
 var numUsers = 0;
 
-// Add dummy data
-var newSocket = socketio()
-
-// Build out storage structures (once!)
+// Storage structure for rooms (including private chat)
 var userHash = {};
-var rooms = []; // Not necessary yet
 
 io.on('connection', function(socket) {
-	var username = generateName().replace(/\s/g, '_');
 	var addedUser = false;
-
-	socket.emit('assign username', { username: username });
+	var username = generateName().replace(/\s/g, '_');
 	userHash[username] = socket;
-	userHash['test'] = newSocket;
+	
+	socket.emit('assign username', {
+		username: username
+	});
 
 	// New messages
 	socket.on('new message', function(data) {
 		// Separate private messages
 		if (data.charAt(0) == '@') {
-			// Parse out private user and message
+			// Parse out username and message
 			var privateUser = data.match(/\S*/)[0].replace(/^@/, '');
 			var privateMessage = data.match(/\s.*/);
-			if (typeof privateMessage == 'array') {
+			if (privateMessage) {
 				privateMessage = privateMessage[0].replace(/^\s/, '');
 			} else {
-				console.log('NICE TRY not an array');
+				socket.emit('new message', {
+					username: socket.username,
+					message: 'You didn\'t type anything!',
+					type: 'privateMessage'
+				});
 			}
 			console.log('Their name: ' + privateUser);
 			// TO DO: add *better* error handling: what if there's no msg?
 			
 			// Set the room name
 			var roomName = Math.floor((Math.random() * 10000) + 1);
-			// TO DO: check against rooms[] to make sure we're not already using it
 			
 			// Join the new room, and put the target user in there too
 			socket.join(roomName);
@@ -68,7 +67,6 @@ io.on('connection', function(socket) {
 			theirSocket.join(roomName);
 
 			// Connect!
-			//io.broadcast.to(roomName).emit
 			socket.broadcast.to(theirSocket.id).emit('new message', {
 				username: socket.username,
 				message: privateMessage,
