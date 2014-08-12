@@ -38,8 +38,13 @@ io.on('connection', function(socket) {
 		if (data.charAt(0) == '@') {
 			console.log('Private message: ' + data.slice(1, data.length));
 			var privateUser = data.match(/\S*/)[0].replace(/^@/, '');
-			var privateMessage = data.match(/\s.*/)[0].replace(/^\s/, '');
-			// Add error handling: what if there's no msg?
+			var privateMessage = data.match(/\s.*/);
+			if (typeof privateMessage == 'array') {
+				privateMessage = privateMessage[0].replace(/^\s/, '');
+			} else {
+				console.log('NICE TRY not an array');
+			}
+			// Add *better* error handling: what if there's no msg?
 			// console.log('Private user: ' + privateUser);
 			// console.log('Private message: ' + privateMessage);
 			var roomName = Math.floor((Math.random() * 100) + 1);
